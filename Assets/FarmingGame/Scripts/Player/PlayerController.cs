@@ -36,6 +36,11 @@ public class PlayerController : BaseAnimationMonoBehaviour
         PlayerActions.Attack.performed -= OnClickAttack;
     }
 
+    private void OnChooseInventoryItem(InputAction.CallbackContext context)
+    {
+        Debug.Log($"pressed key: {context.control.displayName}");
+    }
+
     public void OnAttackComplete()
     {
         if (PlayerActions.Attack.IsPressed()) return;

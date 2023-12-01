@@ -38,5 +38,8 @@ public enum ItemType
 {
     Wood,
     Milk,
-    Egg
+    Egg,
+    Hoe,
+    Axe,
+    WateringPot,
 }
