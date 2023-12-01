@@ -11,6 +11,11 @@ namespace GgAccel
         {
             return (target - transform.position).normalized;
         }
+        
+        public static float GetMagnitude(this Transform transform, Vector3 target)
+        {
+            return (target - transform.position).sqrMagnitude;
+        }
     }
 }
 

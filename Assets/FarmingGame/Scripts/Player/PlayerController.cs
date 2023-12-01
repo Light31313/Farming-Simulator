@@ -62,6 +62,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
     {
         if (_waitDoneAttackingCoroutine != null) StopCoroutine(_waitDoneAttackingCoroutine);
         _moveVector = Vector2.zero;
+        rb.velocity = Vector2.zero;
         animator.SetFloat(Speed, 0);
     }
 

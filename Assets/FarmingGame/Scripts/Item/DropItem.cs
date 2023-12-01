@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using GgAccel;
 using UnityEngine;
 
@@ -5,28 +7,38 @@ public class DropItem : MonoBehaviour
 {
     [SerializeField] private SpriteRenderer srItem;
     [SerializeField] private float followSpeed = 8;
+    [SerializeField] private Rigidbody2D rb;
     private int _stack;
     public DropItemConfig Config { get; private set; }
     private Transform _player;
+    private Transform _cacheTransform;
+    private Coroutine _checkPlayerAroundCoroutine;
 
-    private void FixedUpdate()
+    private void Awake()
     {
-        if (!_player) return;
-        var itemPos = transform.position;
-        var playerPos = _player.position;
-        if ((itemPos - playerPos).sqrMagnitude < 0.3f)
+        _cacheTransform = transform;
+    }
+
+    private void OnEnable()
+    {
+        _checkPlayerAroundCoroutine = StartCoroutine(IECheckPlayerAround());
+    }
+
+    private IEnumerator IECheckPlayerAround()
+    {
+        while (isActiveAndEnabled)
         {
-            Collect();
-        }
-        else
-        {
-            transform.position = Vector3.Lerp(itemPos, playerPos, Time.fixedDeltaTime * followSpeed);
+            yield return Helpers.GetWaitForSeconds(0.1f);
+            if (!_player) continue;
+            var playerPos = _player.position;
+            rb.velocity = _cacheTransform.GetDirection(playerPos) * followSpeed;
         }
     }
 
     private void OnDisable()
     {
         _player = null;
+        if (_checkPlayerAroundCoroutine != null) StopCoroutine(_checkPlayerAroundCoroutine);
     }
 
     public void UpdateItem(DropItemConfig config, int stack)
@@ -56,6 +68,10 @@ public class DropItem : MonoBehaviour
         {
             _player = other.transform;
         }
+        else if (other.CompareTag("PlayerCollide"))
+        {
+            Collect();
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -63,6 +79,7 @@ public class DropItem : MonoBehaviour
         if (other.CompareTag("PlayerCollect"))
         {
             _player = null;
+            rb.velocity = Vector2.zero;
         }
     }
 }
