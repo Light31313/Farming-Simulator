@@ -16,8 +16,8 @@ public class Tree : BaseAnimationMonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var attack = other.gameObject.GetComponent<PlayerAttack>();
-        if (attack)
+        var playerInteract = other.gameObject.GetComponent<PlayerInteract>();
+        if (playerInteract && playerInteract.HoldItemType == ItemType.Axe)
         {
             Chopped();
         }

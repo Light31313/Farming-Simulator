@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using GgAccel;
 using UnityEngine;
 
-public class PlayerInventoryData : Singleton<PlayerInventoryData>
+public class InventoryData : Singleton<InventoryData>
 {
     private Dictionary<int, InventoryItem> _itemsDictionary = new();
     private const int NUMBER_OF_SLOT = 60;
-    private int _currentHoldItem;
+    public InventoryItem CurrentHoldItem { get; private set; }
 
     public static void InitInventory(List<InventoryItem> items)
     {
@@ -19,6 +19,8 @@ public class PlayerInventoryData : Singleton<PlayerInventoryData>
         {
             _itemsDictionary[item.Slot] = item;
         }
+
+        ChangeHoldItem(0);
     }
 
     public static int Collect(DropItemConfig config, int stack)
@@ -30,8 +32,9 @@ public class PlayerInventoryData : Singleton<PlayerInventoryData>
     {
         foreach (var item in _itemsDictionary)
         {
-            if (item.Value.config.Type != config.Type) continue;
-            Debug.Log($"Item: {config.Type}, stack: {_itemsDictionary[item.Key].CurrentStack + stack}");
+            if (item.Value.Config.Type != config.Type) continue;
+            Debug.Log(
+                $"Item: {config.Type}, stack: {_itemsDictionary[item.Key].CurrentStack + stack}, item position: {item.Key}");
             return _itemsDictionary[item.Key].AddStack(stack);
         }
 
@@ -52,29 +55,29 @@ public class PlayerInventoryData : Singleton<PlayerInventoryData>
 
     private void _ChangeHoldItem(int itemPos)
     {
-        InventorySignals.OnChangeItemHold.Dispatch(_itemsDictionary[itemPos]);
-        _currentHoldItem = itemPos;
+        CurrentHoldItem = !_itemsDictionary.ContainsKey(itemPos) ? null : _itemsDictionary[itemPos];
+        InventorySignals.OnChangeItemHold.Dispatch(itemPos);
     }
 }
 
 public class InventoryItem
 {
-    public readonly DropItemConfig config;
+    public readonly DropItemConfig Config;
     public int CurrentStack { get; private set; }
     public int Slot { get; private set; }
 
     public InventoryItem(DropItemConfig config, int slot)
     {
-        this.config = config;
+        this.Config = config;
         Slot = slot;
     }
 
     public int AddStack(int stack)
     {
-        if (CurrentStack + stack > config.MaxStack)
+        if (CurrentStack + stack > Config.MaxStack)
         {
-            var res = stack - (config.MaxStack - CurrentStack);
-            CurrentStack = config.MaxStack;
+            var res = stack - (Config.MaxStack - CurrentStack);
+            CurrentStack = Config.MaxStack;
             return res;
         }
 

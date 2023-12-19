@@ -10,26 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dff70689b67836c4c83f29b37c9620d8, type: 3}
-  m_Name: ItemData
+  m_Name: DropItemData
   m_EditorClassIdentifier: 
   items:
   - itemName: Wood
     itemDescription: Wood from tree
     spriteItem: {fileID: -419702129, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
     maxStack: 99
-    type: 0
+    type: 1
   - itemName: Hoe
     itemDescription: Hoe
     spriteItem: {fileID: -939095185, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
     maxStack: 1
-    type: 3
+    type: 4
   - itemName: Axe
     itemDescription: Used to chop tree
     spriteItem: {fileID: -236284221, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
     maxStack: 1
-    type: 4
+    type: 5
   - itemName: Watering Pot
     itemDescription: Used to water plant
     spriteItem: {fileID: 575270571, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
     maxStack: 1
-    type: 5
+    type: 6

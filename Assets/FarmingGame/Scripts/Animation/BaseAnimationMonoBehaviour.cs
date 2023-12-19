@@ -24,7 +24,6 @@ public abstract class BaseAnimationMonoBehaviour : MonoBehaviour
 
         IEnumerator IEOnAnimationEnd()
         {
-            Debug.Log($"clip length: {clip.length}");
             yield return Helpers.GetWaitForSeconds(clip.length);
             onAnimationEnd?.Invoke();
         }

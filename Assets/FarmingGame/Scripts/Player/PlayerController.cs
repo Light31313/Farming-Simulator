@@ -6,19 +6,19 @@ public class PlayerController : BaseAnimationMonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private PlayerAttack attack;
+    [SerializeField] private PlayerInteract interact;
     private Vector2 _moveVector = Vector2.zero;
     private static readonly int Vertical = Animator.StringToHash("Vertical");
     private static readonly int Horizontal = Animator.StringToHash("Horizontal");
     private static readonly int Speed = Animator.StringToHash("Speed");
     private Coroutine _waitDoneAttackingCoroutine;
-
+    private InventoryData InventoryData => InventoryData.Instance;
     private InputMaster.PlayerActions PlayerActions => InputHelper.Input.Player;
-    private bool _isAttacking;
+    private bool _isInteracting;
 
     private void FixedUpdate()
     {
-        if (_moveVector != Vector2.zero && !_isAttacking)
+        if (_moveVector != Vector2.zero && !_isInteracting)
             rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * _moveVector);
     }
 
@@ -26,25 +26,29 @@ public class PlayerController : BaseAnimationMonoBehaviour
     {
         PlayerActions.Movement.performed += OnMovementPerformed;
         PlayerActions.Movement.canceled += OnMovementCancelled;
-        PlayerActions.Attack.performed += OnClickAttack;
+        PlayerActions.Interact.performed += OnClickInteract;
+        InventorySignals.OnChangeItemHold.AddListener(OnChangeItemHold);
     }
 
     private void OnDisable()
     {
         PlayerActions.Movement.performed -= OnMovementPerformed;
         PlayerActions.Movement.canceled -= OnMovementCancelled;
-        PlayerActions.Attack.performed -= OnClickAttack;
+        PlayerActions.Interact.performed -= OnClickInteract;
+        InventorySignals.OnChangeItemHold.RemoveListener(OnChangeItemHold);
     }
 
-    private void OnChooseInventoryItem(InputAction.CallbackContext context)
+    private void OnChangeItemHold(int itemPos)
     {
-        Debug.Log($"pressed key: {context.control.displayName}");
+        interact.OnChangeItemHold(InventoryData.CurrentHoldItem == null
+            ? ItemType.None
+            : InventoryData.CurrentHoldItem.Config.Type);
     }
 
-    public void OnAttackComplete()
+    public void OnInteractComplete()
     {
-        if (PlayerActions.Attack.IsPressed()) return;
-        _isAttacking = false;
+        if (PlayerActions.Interact.IsPressed()) return;
+        _isInteracting = false;
         SetAnimationState(PlayerState.Idle);
     }
 
@@ -55,7 +59,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
         IEnumerator IEWaitDoneAttacking()
         {
-            yield return new WaitUntil(() => !_isAttacking);
+            yield return new WaitUntil(() => !_isInteracting);
             _moveVector = context.ReadValue<Vector2>();
             animator.SetFloat(Horizontal, _moveVector.x);
             animator.SetFloat(Vertical, _moveVector.y);
@@ -71,20 +75,36 @@ public class PlayerController : BaseAnimationMonoBehaviour
         animator.SetFloat(Speed, 0);
     }
 
-    private void OnClickAttack(InputAction.CallbackContext context)
+    private void OnClickInteract(InputAction.CallbackContext context)
     {
-        SetAnimationState(PlayerState.Chop);
-        _isAttacking = true;
+        if (InventoryData.CurrentHoldItem == null) return;
+        switch (InventoryData.CurrentHoldItem.Config.Type)
+        {
+            case ItemType.Axe:
+                SetAnimationState(PlayerState.Chop);
+                break;
+            case ItemType.Hoe:
+                SetAnimationState(PlayerState.Hoe);
+                break;
+            case ItemType.WateringPot:
+                SetAnimationState(PlayerState.Watering);
+                break;
+            default:
+                break;
+        }
+
+
+        _isInteracting = true;
     }
 
-    public void Chop()
+    public void Interact()
     {
-        attack.Chop();
+        interact.Interact();
     }
 
-    public void DoneChopping()
+    public void DoneInteract()
     {
-        attack.DoneChopping();
+        interact.DoneInteract();
     }
 }
 
@@ -94,4 +114,6 @@ public static class PlayerState
     public const string Idle = "Idle";
     public const string Movement = "Movement";
     public const string Chop = "Chop";
+    public const string Watering = "Watering";
+    public const string Hoe = "Hoe";
 }

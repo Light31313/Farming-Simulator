@@ -66,6 +66,7 @@ public class Animal : BaseAnimationMonoBehaviour
     private void PlayRandomIdleAnim(float idleTime)
     {
         var remainTime = idleTime;
+        StartCoroutine(PlayAnim(0));
         while (remainTime > 10)
         {
             var timeToNextIdle = Random.Range(5f, 9f);

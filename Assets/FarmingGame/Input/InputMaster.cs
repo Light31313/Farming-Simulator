@@ -37,7 +37,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""Attack"",
+                    ""name"": ""Interact"",
                     ""type"": ""Button"",
                     ""id"": ""dc3b191f-3db2-45aa-bf6e-1e8a5e15f29c"",
                     ""expectedControlType"": ""Button"",
@@ -254,7 +254,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard and mouse"",
-                    ""action"": ""Attack"",
+                    ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -393,7 +393,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
-        m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
+        m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Inventory1 = m_Player.FindAction("Inventory1", throwIfNotFound: true);
         m_Player_Inventory2 = m_Player.FindAction("Inventory2", throwIfNotFound: true);
         m_Player_Inventory3 = m_Player.FindAction("Inventory3", throwIfNotFound: true);
@@ -464,7 +464,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Player;
     private IPlayerActions m_PlayerActionsCallbackInterface;
     private readonly InputAction m_Player_Movement;
-    private readonly InputAction m_Player_Attack;
+    private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Inventory1;
     private readonly InputAction m_Player_Inventory2;
     private readonly InputAction m_Player_Inventory3;
@@ -480,7 +480,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
         private @InputMaster m_Wrapper;
         public PlayerActions(@InputMaster wrapper) { m_Wrapper = wrapper; }
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
-        public InputAction @Attack => m_Wrapper.m_Player_Attack;
+        public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Inventory1 => m_Wrapper.m_Player_Inventory1;
         public InputAction @Inventory2 => m_Wrapper.m_Player_Inventory2;
         public InputAction @Inventory3 => m_Wrapper.m_Player_Inventory3;
@@ -503,9 +503,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @Movement.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
                 @Movement.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
                 @Movement.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnMovement;
-                @Attack.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Attack.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
-                @Attack.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAttack;
+                @Interact.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInteract;
                 @Inventory1.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory1;
                 @Inventory1.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory1;
                 @Inventory1.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnInventory1;
@@ -543,9 +543,9 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
                 @Movement.started += instance.OnMovement;
                 @Movement.performed += instance.OnMovement;
                 @Movement.canceled += instance.OnMovement;
-                @Attack.started += instance.OnAttack;
-                @Attack.performed += instance.OnAttack;
-                @Attack.canceled += instance.OnAttack;
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
                 @Inventory1.started += instance.OnInventory1;
                 @Inventory1.performed += instance.OnInventory1;
                 @Inventory1.canceled += instance.OnInventory1;
@@ -592,7 +592,7 @@ public partial class @InputMaster : IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         void OnMovement(InputAction.CallbackContext context);
-        void OnAttack(InputAction.CallbackContext context);
+        void OnInteract(InputAction.CallbackContext context);
         void OnInventory1(InputAction.CallbackContext context);
         void OnInventory2(InputAction.CallbackContext context);
         void OnInventory3(InputAction.CallbackContext context);

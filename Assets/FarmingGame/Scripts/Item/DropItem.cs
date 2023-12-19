@@ -50,7 +50,7 @@ public class DropItem : MonoBehaviour
 
     private void Collect()
     {
-        var overMaxStack = PlayerInventoryData.Collect(Config, _stack);
+        var overMaxStack = InventoryData.Collect(Config, _stack);
         if (overMaxStack > 0)
         {
             _stack = overMaxStack;

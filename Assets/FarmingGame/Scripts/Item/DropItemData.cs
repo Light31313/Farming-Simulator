@@ -36,6 +36,7 @@ public class DropItemConfig
 
 public enum ItemType
 {
+    None,
     Wood,
     Milk,
     Egg,
