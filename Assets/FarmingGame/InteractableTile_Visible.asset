@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: InteractableTile_Visible
   m_EditorClassIdentifier: 
   m_Sprite: {fileID: 821363869, guid: 76012c2603fca3f45a1dfa0438ea3fd1, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6392157}
   m_Transform:
     e00: 1
     e01: 0
