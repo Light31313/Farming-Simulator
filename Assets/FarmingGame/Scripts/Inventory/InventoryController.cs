@@ -15,8 +15,7 @@ public class InventoryController : MonoBehaviour
             new(DropItemData.GetInstance().ItemDictionary[ItemType.Hoe], 1),
             new(DropItemData.GetInstance().ItemDictionary[ItemType.WateringPot], 2)
         });
-        
-        PlayerActions.Inventory0.performed += _ => OnChangeItemHold(9);
+
         PlayerActions.Inventory1.performed += _ => OnChangeItemHold(0);
         PlayerActions.Inventory2.performed += _ => OnChangeItemHold(1);
         PlayerActions.Inventory3.performed += _ => OnChangeItemHold(2);
@@ -25,12 +24,12 @@ public class InventoryController : MonoBehaviour
         PlayerActions.Inventory6.performed += _ => OnChangeItemHold(5);
         PlayerActions.Inventory7.performed += _ => OnChangeItemHold(6);
         PlayerActions.Inventory8.performed += _ => OnChangeItemHold(7);
-        PlayerActions.Inventory9.performed += _ => OnChangeItemHold(8);
+        GamePlayModel.Instance.isInitDataDone = true;
     }
-    
+
     private void OnChangeItemHold(int itemPos)
     {
-        if(!isActiveAndEnabled) return;
+        if (!isActiveAndEnabled) return;
         InventoryData.ChangeHoldItem(itemPos);
     }
 }

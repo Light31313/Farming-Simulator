@@ -20,9 +20,9 @@ namespace GgAccel
             }
         }
 
-        public static void PlaySound(AudioClip clip)
+        public static void PlaySound(AudioClip clip, float volumeScale = 1)
         {
-            Instance.effectSource.PlayOneShot(clip);
+            Instance.effectSource.PlayOneShot(clip, Instance.effectSource.volume * volumeScale);
         }
 
         public static void ChangeMasterVolume(float value)

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class InventoryData : Singleton<InventoryData>
 {
-    private Dictionary<int, InventoryItem> _itemsDictionary = new();
+    public readonly Dictionary<int, InventoryItem> ItemsDictionary = new();
     private const int NUMBER_OF_SLOT = 60;
+    
     public InventoryItem CurrentHoldItem { get; private set; }
 
     public static void InitInventory(List<InventoryItem> items)
@@ -17,7 +18,7 @@ public class InventoryData : Singleton<InventoryData>
     {
         foreach (var item in items)
         {
-            _itemsDictionary[item.Slot] = item;
+            ItemsDictionary[item.Slot] = item;
         }
 
         ChangeHoldItem(0);
@@ -30,21 +31,23 @@ public class InventoryData : Singleton<InventoryData>
 
     private int _Collect(DropItemConfig config, int stack)
     {
-        foreach (var item in _itemsDictionary)
+        foreach (var item in ItemsDictionary)
         {
             if (item.Value.Config.Type != config.Type) continue;
             Debug.Log(
-                $"Item: {config.Type}, stack: {_itemsDictionary[item.Key].CurrentStack + stack}, item position: {item.Key}");
-            return _itemsDictionary[item.Key].AddStack(stack);
+                $"Item: {config.Type}, stack: {ItemsDictionary[item.Key].CurrentStack + stack}, item position: {item.Key}");
+            InventorySignals.OnCollectItem.Dispatch(item.Key, ItemsDictionary[item.Key]);
+            return ItemsDictionary[item.Key].AddStack(stack);
         }
 
         for (var i = 0; i < NUMBER_OF_SLOT; i++)
         {
-            if (_itemsDictionary.ContainsKey(i)) continue;
-            _itemsDictionary[i] = new InventoryItem(config, i);
-            return _itemsDictionary[i].AddStack(stack);
+            if (ItemsDictionary.ContainsKey(i)) continue;
+            ItemsDictionary[i] = new InventoryItem(config, i);
+            InventorySignals.OnCollectItem.Dispatch(i, ItemsDictionary[i]);
+            return ItemsDictionary[i].AddStack(stack);
         }
-
+        
         return stack;
     }
 
@@ -55,7 +58,7 @@ public class InventoryData : Singleton<InventoryData>
 
     private void _ChangeHoldItem(int itemPos)
     {
-        CurrentHoldItem = !_itemsDictionary.ContainsKey(itemPos) ? null : _itemsDictionary[itemPos];
+        CurrentHoldItem = !ItemsDictionary.ContainsKey(itemPos) ? null : ItemsDictionary[itemPos];
         InventorySignals.OnChangeItemHold.Dispatch(itemPos);
     }
 }

@@ -32,6 +32,9 @@ public class DropItemConfig
 
     [SerializeField] private ItemType type;
     public ItemType Type => type;
+
+    [SerializeField] private bool needIndicator;
+    public bool NeedIndicator => needIndicator;
 }
 
 public enum ItemType

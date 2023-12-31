@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,11 +15,34 @@ public class PlayerController : BaseAnimationMonoBehaviour
     private Coroutine _waitDoneAttackingCoroutine;
     private InventoryData InventoryData => InventoryData.Instance;
     private InputMaster.PlayerActions PlayerActions => InputHelper.Input.Player;
-    private bool _isInteracting;
+    private Transform _cacheTransform;
+    private TileManager TileManager => TileManager.Instance;
+    private Vector2Int _currentFacingDirection = Vector2Int.down;
+    private ItemType _currentInteractingItemType;
+    
+    private void Start()
+    {
+        _cacheTransform = transform;
+    }
+
+    private void Update()
+    {
+        if (InventoryData.CurrentHoldItem != null && InventoryData.CurrentHoldItem.Config.NeedIndicator)
+        {
+            var currentPos = _cacheTransform.position;
+            var indicatorPos = new Vector3Int(Mathf.FloorToInt(currentPos.x + _currentFacingDirection.x * 0.8f),
+                Mathf.FloorToInt(currentPos.y + _currentFacingDirection.y / 2f));
+            TileManager.SetIndicatorTile(indicatorPos);
+        }
+        else
+        {
+            TileManager.ClearIndicator();
+        }
+    }
 
     private void FixedUpdate()
     {
-        if (_moveVector != Vector2.zero && !_isInteracting)
+        if (_moveVector != Vector2.zero && !interact.isInteracting)
             rb.MovePosition(rb.position + moveSpeed * Time.fixedDeltaTime * _moveVector);
     }
 
@@ -40,15 +64,13 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
     private void OnChangeItemHold(int itemPos)
     {
-        interact.OnChangeItemHold(InventoryData.CurrentHoldItem == null
-            ? ItemType.None
-            : InventoryData.CurrentHoldItem.Config.Type);
+        interact.OnChangeItemHold();
     }
 
     public void OnInteractComplete()
     {
         if (PlayerActions.Interact.IsPressed()) return;
-        _isInteracting = false;
+        interact.isInteracting = false;
         SetAnimationState(PlayerState.Idle);
     }
 
@@ -59,8 +81,9 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
         IEnumerator IEWaitDoneAttacking()
         {
-            yield return new WaitUntil(() => !_isInteracting);
+            yield return new WaitUntil(() => !interact.isInteracting);
             _moveVector = context.ReadValue<Vector2>();
+            SetFacingDirection();
             animator.SetFloat(Horizontal, _moveVector.x);
             animator.SetFloat(Vertical, _moveVector.y);
             animator.SetFloat(Speed, 1);
@@ -78,36 +101,51 @@ public class PlayerController : BaseAnimationMonoBehaviour
     private void OnClickInteract(InputAction.CallbackContext context)
     {
         if (InventoryData.CurrentHoldItem == null) return;
+        _currentInteractingItemType = InventoryData.CurrentHoldItem.Config.Type;
         switch (InventoryData.CurrentHoldItem.Config.Type)
         {
             case ItemType.Axe:
-                SetAnimationState(PlayerState.Chop);
+                SetInteractingAnimation(PlayerState.Chop);
                 break;
             case ItemType.Hoe:
-                SetAnimationState(PlayerState.Hoe);
+                SetInteractingAnimation(PlayerState.Hoe);
                 break;
             case ItemType.WateringPot:
-                SetAnimationState(PlayerState.Watering);
+                SetInteractingAnimation(PlayerState.Watering);
                 break;
             default:
                 break;
         }
+    }
 
-
-        _isInteracting = true;
+    private void SetInteractingAnimation(string animationName)
+    {
+        interact.isInteracting = true;
+        SetAnimationState(animationName);
     }
 
     public void Interact()
     {
-        interact.Interact();
+        interact.Interact(_currentInteractingItemType);
     }
 
     public void DoneInteract()
     {
         interact.DoneInteract();
     }
-}
 
+
+    private void SetFacingDirection()
+    {
+        _currentFacingDirection = _moveVector switch
+        {
+            { x: > 0, y: >= 0 } => Vector2Int.right,
+            { x: < 0, y: >= 0 } => Vector2Int.left,
+            { x: 0, y: > 0 } => Vector2Int.up,
+            _ => Vector2Int.down
+        };
+    }
+}
 
 public static class PlayerState
 {
