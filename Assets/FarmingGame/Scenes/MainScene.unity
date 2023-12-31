@@ -241,6 +241,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 1153985fd66063940a08f1b87d1b9082, type: 3}
   - {fileID: 8300000, guid: abcebc98f38fbe64bb1dc07ef047dd81, type: 3}
   - {fileID: 8300000, guid: 6de6dcb2fbd6be148baecb7b5a8bbb16, type: 3}
+  wateringVolumeScale: 0.8
   isInteracting: 0
 --- !u!224 &230483215 stripped
 RectTransform:
