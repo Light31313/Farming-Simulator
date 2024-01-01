@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Wood
+  m_EditorClassIdentifier: Assembly-CSharp::ItemConfig
+  tags: 04000000
+  itemName: Wood
+  itemDescription: Wood from tree
+  spriteItem: {fileID: -419702129, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
+  maxStack: 99
+  type: 1
+  needIndicator: 0
+  spritePlantGrows: []
+  harvestPrice: 0
+  canHarvestMultipleTimes: 0
+  spriteHarvestMultipleTimes: {fileID: 0}
+  attackDamage: 0

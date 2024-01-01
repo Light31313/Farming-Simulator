@@ -9,7 +9,7 @@ public class DropItem : MonoBehaviour
     [SerializeField] private float followSpeed = 8;
     [SerializeField] private Rigidbody2D rb;
     private int _stack;
-    public DropItemConfig Config { get; private set; }
+    public ItemConfig Config { get; private set; }
     private Transform _player;
     private Transform _cacheTransform;
     private Coroutine _checkPlayerAroundCoroutine;
@@ -41,7 +41,7 @@ public class DropItem : MonoBehaviour
         if (_checkPlayerAroundCoroutine != null) StopCoroutine(_checkPlayerAroundCoroutine);
     }
 
-    public void UpdateItem(DropItemConfig config, int stack)
+    public void UpdateItem(ItemConfig config, int stack)
     {
         _stack = stack;
         Config = config;

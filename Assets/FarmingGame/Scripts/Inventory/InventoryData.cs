@@ -24,12 +24,12 @@ public class InventoryData : Singleton<InventoryData>
         ChangeHoldItem(0);
     }
 
-    public static int Collect(DropItemConfig config, int stack)
+    public static int Collect(ItemConfig config, int stack)
     {
         return Instance._Collect(config, stack);
     }
 
-    private int _Collect(DropItemConfig config, int stack)
+    private int _Collect(ItemConfig config, int stack)
     {
         foreach (var item in ItemsDictionary)
         {
@@ -65,11 +65,11 @@ public class InventoryData : Singleton<InventoryData>
 
 public class InventoryItem
 {
-    public readonly DropItemConfig Config;
+    public readonly ItemConfig Config;
     public int CurrentStack { get; private set; }
     public int Slot { get; private set; }
 
-    public InventoryItem(DropItemConfig config, int slot)
+    public InventoryItem(ItemConfig config, int slot)
     {
         this.Config = config;
         Slot = slot;

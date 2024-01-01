@@ -35,7 +35,7 @@ public class Tree : BaseAnimationMonoBehaviour
         var treePos = _cacheTransform.position;
         var item = Pool.Get(dropItemPrefab);
         item.transform.position = treePos;
-        item.UpdateItem(DropItemData.GetInstance().ItemDictionary[ItemType.Wood], Random.Range(1, 3));
+        item.UpdateItem(ItemData.GetInstance().ItemDictionary[ItemType.Wood], Random.Range(1, 3));
         item.transform.DOJump(new Vector3(treePos.x + Random.Range(-1.5f, 1.5f), treePos.y + Random.Range(-1f, -0.5f),
             0), 1, 1, 0.3f);
     }

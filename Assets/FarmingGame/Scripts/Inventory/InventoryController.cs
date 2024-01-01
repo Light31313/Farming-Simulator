@@ -11,9 +11,9 @@ public class InventoryController : MonoBehaviour
     {
         InventoryData.InitInventory(new List<InventoryItem>
         {
-            new(DropItemData.GetInstance().ItemDictionary[ItemType.Axe], 0),
-            new(DropItemData.GetInstance().ItemDictionary[ItemType.Hoe], 1),
-            new(DropItemData.GetInstance().ItemDictionary[ItemType.WateringPot], 2)
+            new(ItemData.GetInstance().ItemDictionary[ItemType.Axe], 0),
+            new(ItemData.GetInstance().ItemDictionary[ItemType.Hoe], 1),
+            new(ItemData.GetInstance().ItemDictionary[ItemType.WateringPot], 2)
         });
 
         PlayerActions.Inventory1.performed += _ => OnChangeItemHold(0);
