@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a37530a5f4f52a4489915bcab91ff1a1, type: 3}
-  m_Name: Corn
+  m_Name: BeetSeed
   m_EditorClassIdentifier: Assembly-CSharp::ItemConfig
   tags: 00000000
-  itemName: Corn Seed
-  itemDescription: Corn Seed
-  spriteItem: {fileID: -1288573173, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
-  maxStack: 99
-  type: 7
+  itemName: Beet Seed
+  itemDescription: Beet Seed
+  spriteItem: {fileID: -182904098, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
+  maxStack: 10
+  type: 8
   needIndicator: 0
   spritePlantGrows:
-  - {fileID: -2071830834, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
-  - {fileID: 96480652, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
-  - {fileID: 319432900, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
-  - {fileID: -1694014965, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: -660994090, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: 1827460113, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: 628850067, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: 1964642536, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  dayToGrowEachState: 010000000200000002000000
   harvestPrice: 0
-  canHarvestMultipleTimes: 1
+  canHarvestMultipleTimes: 0
   spriteHarvestMultipleTimes: {fileID: -2147439392, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  dayToRegrow: 0
   attackDamage: 0

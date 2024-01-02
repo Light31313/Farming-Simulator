@@ -18,7 +18,9 @@ public class ItemEditor : Editor
         harvestPriceProp,
         attackDamageProp,
         canHarvestMultipleTimesProp,
-        spriteHarvestMultipleTimesProp;
+        spriteHarvestMultipleTimesProp,
+        dayToGrowEachStateProp,
+        dayToRegrowProp;
 
     void OnEnable()
     {
@@ -35,6 +37,8 @@ public class ItemEditor : Editor
         attackDamageProp = serializedObject.FindProperty("attackDamage");
         canHarvestMultipleTimesProp = serializedObject.FindProperty("canHarvestMultipleTimes");
         spriteHarvestMultipleTimesProp = serializedObject.FindProperty("spriteHarvestMultipleTimes");
+        dayToGrowEachStateProp = serializedObject.FindProperty("dayToGrowEachState");
+        dayToRegrowProp = serializedObject.FindProperty("dayToRegrow");
     }
 
     public override void OnInspectorGUI()
@@ -56,10 +60,12 @@ public class ItemEditor : Editor
                     break;
                 case ItemTag.Seed:
                     EditorGUILayout.PropertyField(spritePlantGrowsProp);
+                    EditorGUILayout.PropertyField(dayToGrowEachStateProp);
                     EditorGUILayout.PropertyField(canHarvestMultipleTimesProp);
                     if (canHarvestMultipleTimesProp.boolValue)
                     {
                         EditorGUILayout.PropertyField(spriteHarvestMultipleTimesProp);
+                        EditorGUILayout.PropertyField(dayToRegrowProp);
                     }
 
                     break;
