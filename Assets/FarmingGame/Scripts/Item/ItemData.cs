@@ -18,10 +18,6 @@ public class ItemData : ScriptableResourcesSingleton<ItemData>
     private void OnValidate()
     {
         items.Clear();
-        var itemConfigs = Resources.LoadAll("Data/Item/ItemConfigs");
-        foreach (var item in itemConfigs)
-        {
-            items.Add((ItemConfig)item);
-        }
+        items.AddRange(Resources.LoadAll<ItemConfig>("Data/Item/ItemConfigs"));
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,14 +17,7 @@ public class QuickAccessInventory : MonoBehaviour
             for (var i = 0; i < inventoryItemHolders.Length; i++)
             {
                 var itemView = inventoryItemHolders[i];
-                if (ItemsDictionary.ContainsKey(i))
-                {
-                    itemView.UpdateItem(ItemsDictionary[i].Config.SpriteItem, ItemsDictionary[i].CurrentStack);
-                }
-                else
-                {
-                    itemView.UpdateItem(null, 0);
-                }
+                itemView.UpdateItem(ItemsDictionary[i]);
             }
         }
     }
@@ -43,20 +35,20 @@ public class QuickAccessInventory : MonoBehaviour
     private void OnEnable()
     {
         InventorySignals.OnChangeItemHold.AddListener(OnChangeItemHold);
-        InventorySignals.OnCollectItem.AddListener(OnCollectItem);
+        InventorySignals.OnUpdateItem.AddListener(OnCollectItem);
     }
 
     private void OnDisable()
     {
         InventorySignals.OnChangeItemHold.RemoveListener(OnChangeItemHold);
-        InventorySignals.OnCollectItem.RemoveListener(OnCollectItem);
+        InventorySignals.OnUpdateItem.RemoveListener(OnCollectItem);
     }
 
-    private void OnCollectItem(int itemPos, InventoryItem itemData)
+    private void OnCollectItem(int itemPos)
     {
         if (itemPos < inventoryItemHolders.Length)
             inventoryItemHolders[itemPos]
-                .UpdateItem(itemData.Config.SpriteItem, itemData.CurrentStack);
+                .UpdateItem(ItemsDictionary[itemPos]);
     }
 
     private void OnChangeItemHold(int slotPos)

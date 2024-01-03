@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using GgAccel;
 using UnityEngine;
@@ -5,9 +6,10 @@ using UnityEngine;
 public class InventoryData : Singleton<InventoryData>
 {
     public readonly Dictionary<int, InventoryItem> ItemsDictionary = new();
-    private const int NUMBER_OF_SLOT = 60;
-    
-    public InventoryItem CurrentHoldItem { get; private set; }
+    private const int NUMBER_OF_SLOT = 54;
+
+    public int CurrentHoldItemPos { get; private set; }
+    public InventoryItem GetCurrentHoldItem => ItemsDictionary[CurrentHoldItemPos];
 
     public static void InitInventory(List<InventoryItem> items)
     {
@@ -16,6 +18,11 @@ public class InventoryData : Singleton<InventoryData>
 
     private void _InitInventory(List<InventoryItem> items)
     {
+        for (var i = 0; i < NUMBER_OF_SLOT; i++)
+        {
+            ItemsDictionary[i] = null;
+        }
+
         foreach (var item in items)
         {
             ItemsDictionary[item.Slot] = item;
@@ -33,22 +40,33 @@ public class InventoryData : Singleton<InventoryData>
     {
         foreach (var item in ItemsDictionary)
         {
-            if (item.Value.Config.Type != config.Type) continue;
+            if (item.Value == null || item.Value.Config.Type != config.Type) continue;
             Debug.Log(
                 $"Item: {config.Type}, stack: {ItemsDictionary[item.Key].CurrentStack + stack}, item position: {item.Key}");
-            InventorySignals.OnCollectItem.Dispatch(item.Key, ItemsDictionary[item.Key]);
+            InventorySignals.OnUpdateItem.Dispatch(item.Key);
             return ItemsDictionary[item.Key].AddStack(stack);
         }
 
         for (var i = 0; i < NUMBER_OF_SLOT; i++)
         {
-            if (ItemsDictionary.ContainsKey(i)) continue;
+            if (ItemsDictionary[i] != null) continue;
             ItemsDictionary[i] = new InventoryItem(config, i);
-            InventorySignals.OnCollectItem.Dispatch(i, ItemsDictionary[i]);
+            InventorySignals.OnUpdateItem.Dispatch(i);
             return ItemsDictionary[i].AddStack(stack);
         }
-        
+
         return stack;
+    }
+
+    public static void UseHoldItem()
+    {
+        var itemPos = Instance.CurrentHoldItemPos;
+        Instance.GetCurrentHoldItem.UseItem(() =>
+        {
+            Instance.ItemsDictionary[itemPos] = null;
+            ChangeHoldItem(itemPos);
+        });
+        InventorySignals.OnUpdateItem.Dispatch(itemPos);
     }
 
     public static void ChangeHoldItem(int itemPos)
@@ -58,7 +76,7 @@ public class InventoryData : Singleton<InventoryData>
 
     private void _ChangeHoldItem(int itemPos)
     {
-        CurrentHoldItem = !ItemsDictionary.ContainsKey(itemPos) ? null : ItemsDictionary[itemPos];
+        CurrentHoldItemPos = itemPos;
         InventorySignals.OnChangeItemHold.Dispatch(itemPos);
     }
 }
@@ -69,10 +87,17 @@ public class InventoryItem
     public int CurrentStack { get; private set; }
     public int Slot { get; private set; }
 
-    public InventoryItem(ItemConfig config, int slot)
+    public InventoryItem(ItemConfig config, int slot, int currentStack = 0)
     {
-        this.Config = config;
+        Config = config;
         Slot = slot;
+        CurrentStack = currentStack;
+    }
+
+    public void UseItem(Action onOutOfStack)
+    {
+        CurrentStack--;
+        if (CurrentStack <= 0) onOutOfStack.Invoke();
     }
 
     public int AddStack(int stack)

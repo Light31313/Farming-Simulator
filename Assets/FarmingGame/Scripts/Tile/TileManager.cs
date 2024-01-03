@@ -7,13 +7,16 @@ using Random = UnityEngine.Random;
 
 public class TileManager : MonoSingleton<TileManager>
 {
+    [SerializeField] private Plant plantPrefab;
+
     [SerializeField] private Tilemap interactableMap, indicatorMap;
     [SerializeField] private Tile hiddenInteractableTile;
     [SerializeField] private AnimatedTile indicatorTile;
     [SerializeField] private AdvancedRuleTile tileDirt;
     [SerializeField] private AudioClip[] sfxHoes;
+    [SerializeField] private AudioClip[] sfxSowSeeds;
     public Vector3Int CurrentIndicatorPos { get; private set; }
-    private Dictionary<Vector3Int, InteractableTileInfo> _interactableTileDic = new();
+    private Dictionary<Vector3Int, HoedTileInfo> _interactableTileDic = new();
 
 
     private void Start()
@@ -32,7 +35,7 @@ public class TileManager : MonoSingleton<TileManager>
     {
         if (!_interactableTileDic.ContainsKey(CurrentIndicatorPos)) return;
         WaterTile(CurrentIndicatorPos, true);
-        _interactableTileDic[CurrentIndicatorPos].isWatered = true;
+        _interactableTileDic[CurrentIndicatorPos].IsWatered = true;
         interactableMap.SetColor(CurrentIndicatorPos, new Color(0.8f, 0.8f, 0.8f, 1f));
     }
 
@@ -40,7 +43,7 @@ public class TileManager : MonoSingleton<TileManager>
     {
         foreach (var item in _interactableTileDic)
         {
-            if (!item.Value.isWatered) continue;
+            if (!item.Value.IsWatered) continue;
             WaterTile(item.Key, false);
         }
     }
@@ -51,12 +54,12 @@ public class TileManager : MonoSingleton<TileManager>
 
         if (isWatering)
         {
-            _interactableTileDic[tilePos].isWatered = true;
+            _interactableTileDic[tilePos].IsWatered = true;
             interactableMap.SetColor(tilePos, new Color(0.8f, 0.8f, 0.8f, 1f));
         }
         else
         {
-            _interactableTileDic[tilePos].isWatered = false;
+            _interactableTileDic[tilePos].IsWatered = false;
             interactableMap.SetColor(tilePos, Color.white);
         }
     }
@@ -66,8 +69,21 @@ public class TileManager : MonoSingleton<TileManager>
         if (!IsTileInteractable(CurrentIndicatorPos) || _interactableTileDic.ContainsKey(CurrentIndicatorPos)) return;
         interactableMap.SetTile(CurrentIndicatorPos, tileDirt);
         interactableMap.SetColor(CurrentIndicatorPos, Color.white);
-        _interactableTileDic[CurrentIndicatorPos] = new InteractableTileInfo();
+        _interactableTileDic[CurrentIndicatorPos] = new HoedTileInfo();
         sfxHoes.PlayRandomClips();
+    }
+
+    public void SowSeed(ItemConfig seed, Action onSowSuccess)
+    {
+        if (!_interactableTileDic.ContainsKey(CurrentIndicatorPos) ||
+            _interactableTileDic[CurrentIndicatorPos].Plant != null) return;
+
+        _interactableTileDic[CurrentIndicatorPos].Plant = Pool.Get(plantPrefab, interactableMap.transform);
+        _interactableTileDic[CurrentIndicatorPos].Plant.transform.position =
+            new Vector3(CurrentIndicatorPos.x + 0.5f, CurrentIndicatorPos.y + 0.4f, 0);
+        _interactableTileDic[CurrentIndicatorPos].Plant.InitPlant(seed);
+        sfxSowSeeds.PlayRandomClips();
+        onSowSuccess.Invoke();
     }
 
     public void SetIndicatorTile(Vector3Int pos)
@@ -92,7 +108,16 @@ public class TileManager : MonoSingleton<TileManager>
     }
 }
 
-public class InteractableTileInfo
+public class HoedTileInfo
 {
-    public bool isWatered;
+    public bool IsWatered;
+    public Plant Plant;
+
+    public void GrowPlant()
+    {
+        if (IsWatered && Plant)
+        {
+            Plant.Grow();
+        }
+    }
 }

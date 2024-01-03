@@ -18,7 +18,7 @@ MonoBehaviour:
   spriteItem: {fileID: -686389737, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
   maxStack: 10
   type: 14
-  needIndicator: 0
+  needIndicator: 1
   spritePlantGrows:
   - {fileID: 1600051396, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
   - {fileID: 420422445, guid: 8df343cf7de74ad48a9203102df24170, type: 3}

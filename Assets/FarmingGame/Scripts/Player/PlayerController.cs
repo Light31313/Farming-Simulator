@@ -18,8 +18,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
     private Transform _cacheTransform;
     private TileManager TileManager => TileManager.Instance;
     private Vector2Int _currentFacingDirection = Vector2Int.down;
-    private ItemType _currentInteractingItemType;
-    
+
     private void Start()
     {
         _cacheTransform = transform;
@@ -27,7 +26,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
     private void Update()
     {
-        if (InventoryData.CurrentHoldItem != null && InventoryData.CurrentHoldItem.Config.NeedIndicator)
+        if (InventoryData.GetCurrentHoldItem != null && InventoryData.GetCurrentHoldItem.Config.NeedIndicator)
         {
             var currentPos = _cacheTransform.position;
             var indicatorPos = new Vector3Int(Mathf.FloorToInt(currentPos.x + _currentFacingDirection.x * 0.8f),
@@ -51,7 +50,6 @@ public class PlayerController : BaseAnimationMonoBehaviour
         PlayerActions.Movement.performed += OnMovementPerformed;
         PlayerActions.Movement.canceled += OnMovementCancelled;
         PlayerActions.Interact.performed += OnClickInteract;
-        InventorySignals.OnChangeItemHold.AddListener(OnChangeItemHold);
     }
 
     private void OnDisable()
@@ -59,12 +57,6 @@ public class PlayerController : BaseAnimationMonoBehaviour
         PlayerActions.Movement.performed -= OnMovementPerformed;
         PlayerActions.Movement.canceled -= OnMovementCancelled;
         PlayerActions.Interact.performed -= OnClickInteract;
-        InventorySignals.OnChangeItemHold.RemoveListener(OnChangeItemHold);
-    }
-
-    private void OnChangeItemHold(int itemPos)
-    {
-        interact.OnChangeItemHold();
     }
 
     public void OnInteractComplete()
@@ -100,9 +92,8 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
     private void OnClickInteract(InputAction.CallbackContext context)
     {
-        if (InventoryData.CurrentHoldItem == null) return;
-        _currentInteractingItemType = InventoryData.CurrentHoldItem.Config.Type;
-        switch (InventoryData.CurrentHoldItem.Config.Type)
+        if (InventoryData.GetCurrentHoldItem == null) return;
+        switch (InventoryData.GetCurrentHoldItem.Config.Type)
         {
             case ItemType.Axe:
                 SetInteractingAnimation(PlayerState.Chop);
@@ -114,6 +105,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
                 SetInteractingAnimation(PlayerState.Watering);
                 break;
             default:
+                Interact();
                 break;
         }
     }
@@ -126,7 +118,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
     public void Interact()
     {
-        interact.Interact(_currentInteractingItemType);
+        interact.Interact();
     }
 
     public void DoneInteract()

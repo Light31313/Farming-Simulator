@@ -10,26 +10,26 @@ public class InventoryItemHolder : MonoBehaviour
     [SerializeField] private TextMeshProUGUI txtStack;
     public int itemPos;
 
-    public void UpdateItem(Sprite spriteItem, int stack)
+    public void UpdateItem(InventoryItem item)
     {
-        if (!spriteItem)
+        if (item == null)
         {
             imgItem.gameObject.SetActive(false);
-        }
-        else
-        {
-            imgItem.gameObject.SetActive(true);
-            imgItem.sprite = spriteItem;
+            txtStack.gameObject.SetActive(false);
+            return;
         }
 
-        if (stack <= 1)
+        imgItem.gameObject.SetActive(true);
+        imgItem.sprite = item.Config.SpriteItem;
+
+        if (item.CurrentStack <= 1)
         {
             txtStack.gameObject.SetActive(false);
         }
         else
         {
             txtStack.gameObject.SetActive(true);
-            txtStack.text = $"x{stack}";
+            txtStack.text = $"x{item.CurrentStack}";
         }
     }
 
