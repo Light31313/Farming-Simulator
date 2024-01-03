@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a37530a5f4f52a4489915bcab91ff1a1, type: 3}
   m_Name: Axe
   m_EditorClassIdentifier: Assembly-CSharp::ItemConfig
-  tags: 0200000003000000
+  tags: 0300000002000000
   itemName: Axe
   itemDescription: Use to chop tree
   spriteItem: {fileID: -236284221, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
@@ -20,7 +20,9 @@ MonoBehaviour:
   type: 5
   needIndicator: 0
   spritePlantGrows: []
+  dayToGrowEachState: 
   harvestPrice: 0
   canHarvestMultipleTimes: 0
   spriteHarvestMultipleTimes: {fileID: 0}
-  attackDamage: 0
+  dayToRegrow: 0
+  attackDamage: 10

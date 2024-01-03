@@ -9,18 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: a37530a5f4f52a4489915bcab91ff1a1, type: 3}
   m_Name: Hoe
   m_EditorClassIdentifier: Assembly-CSharp::ItemConfig
   tags: 03000000
   itemName: Hoe
-  itemDescription: Use to plump ground
+  itemDescription: Use to plow
   spriteItem: {fileID: -939095185, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
   maxStack: 1
   type: 4
   needIndicator: 1
   spritePlantGrows: []
+  dayToGrowEachState: 
   harvestPrice: 0
   canHarvestMultipleTimes: 0
   spriteHarvestMultipleTimes: {fileID: 0}
+  dayToRegrow: 0
   attackDamage: 0
