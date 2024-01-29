@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerController : BaseAnimationMonoBehaviour
@@ -92,6 +93,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
     private void OnClickInteract(InputAction.CallbackContext context)
     {
+        if (EventSystem.current.IsPointerOverGameObject()) return;
         if (InventoryData.GetCurrentHoldItem == null) return;
         switch (InventoryData.GetCurrentHoldItem.Config.Type)
         {

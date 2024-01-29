@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using GgAccel;
+using GgAccelSDK.Script;
+using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
@@ -31,19 +33,34 @@ public class TileManager : MonoSingleton<TileManager>
         }
     }
 
+    private void OnEnable()
+    {
+        TimeSignals.OnStartNewDay.AddListener(OnStartNewDay);
+    }
+
+    private void OnDisable()
+    {
+        TimeSignals.OnStartNewDay.RemoveListener(OnStartNewDay);
+    }
+
+    private void OnStartNewDay(DayData dayData)
+    {
+        GrowAllPlants();
+    }
+
     public void WaterHoedTile()
     {
         if (!_interactableTileDic.ContainsKey(CurrentIndicatorPos)) return;
         WaterTile(CurrentIndicatorPos, true);
-        _interactableTileDic[CurrentIndicatorPos].IsWatered = true;
+        _interactableTileDic[CurrentIndicatorPos].Water(true);
         interactableMap.SetColor(CurrentIndicatorPos, new Color(0.8f, 0.8f, 0.8f, 1f));
     }
 
-    public void ClearWaterHoedTile()
+    private void GrowAllPlants()
     {
         foreach (var item in _interactableTileDic)
         {
-            if (!item.Value.IsWatered) continue;
+            item.Value.GrowPlant();
             WaterTile(item.Key, false);
         }
     }
@@ -54,12 +71,12 @@ public class TileManager : MonoSingleton<TileManager>
 
         if (isWatering)
         {
-            _interactableTileDic[tilePos].IsWatered = true;
+            _interactableTileDic[tilePos].Water(true);
             interactableMap.SetColor(tilePos, new Color(0.8f, 0.8f, 0.8f, 1f));
         }
         else
         {
-            _interactableTileDic[tilePos].IsWatered = false;
+            _interactableTileDic[tilePos].Water(false);
             interactableMap.SetColor(tilePos, Color.white);
         }
     }
@@ -110,14 +127,21 @@ public class TileManager : MonoSingleton<TileManager>
 
 public class HoedTileInfo
 {
-    public bool IsWatered;
+    private bool _isWatered;
     public Plant Plant;
 
     public void GrowPlant()
     {
-        if (IsWatered && Plant)
+        if (_isWatered && Plant)
         {
             Plant.Grow();
         }
+
+        _isWatered = false;
+    }
+
+    public void Water(bool isWater)
+    {
+        _isWatered = isWater;
     }
 }

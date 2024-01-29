@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using GgAccel;
 using UnityEngine;
 
 public class QuickAccessInventory : MonoBehaviour
 {
     [SerializeField] private InventoryItemHolder[] inventoryItemHolders;
     private Dictionary<int, InventoryItem> ItemsDictionary => InventoryData.Instance.ItemsDictionary;
+
+    [SerializeField] private AudioClip clickButtonSfx;
 
     private void Start()
     {
@@ -18,6 +21,13 @@ public class QuickAccessInventory : MonoBehaviour
             {
                 var itemView = inventoryItemHolders[i];
                 itemView.UpdateItem(ItemsDictionary[i]);
+                var i1 = i;
+                itemView.InitToggleEvent((isOn) =>
+                {
+                    Debug.Log("Call toggle event");
+                    if (!isOn) return;
+                    OnItemToggleClick(i1);
+                });
             }
         }
     }
@@ -25,23 +35,18 @@ public class QuickAccessInventory : MonoBehaviour
     private void OnValidate()
     {
         inventoryItemHolders = GetComponentsInChildren<InventoryItemHolder>();
-        for (var i = 0; i < inventoryItemHolders.Length; i++)
-        {
-            var itemView = inventoryItemHolders[i];
-            itemView.itemPos = i;
-        }
     }
 
     private void OnEnable()
     {
-        InventorySignals.OnChangeItemHold.AddListener(OnChangeItemHold);
         InventorySignals.OnUpdateItem.AddListener(OnCollectItem);
+        InputSignals.OnQuickAccessInventoryClick.AddListener(OnQuickAccessInventoryClick);
     }
 
     private void OnDisable()
     {
-        InventorySignals.OnChangeItemHold.RemoveListener(OnChangeItemHold);
         InventorySignals.OnUpdateItem.RemoveListener(OnCollectItem);
+        InputSignals.OnQuickAccessInventoryClick.RemoveListener(OnQuickAccessInventoryClick);
     }
 
     private void OnCollectItem(int itemPos)
@@ -51,8 +56,18 @@ public class QuickAccessInventory : MonoBehaviour
                 .UpdateItem(ItemsDictionary[itemPos]);
     }
 
-    private void OnChangeItemHold(int slotPos)
+    private void OnQuickAccessInventoryClick(int itemPos)
     {
-        inventoryItemHolders[slotPos].ChooseItem();
+        inventoryItemHolders[itemPos].ChooseItem();
+    }
+
+    private void OnItemToggleClick(int itemPos)
+    {
+        if (itemPos != InventoryData.Instance.CurrentHoldItemPos)
+        {
+            AudioManager.PlaySound(clickButtonSfx);
+        }
+
+        InventoryData.ChangeHoldItem(itemPos);
     }
 }

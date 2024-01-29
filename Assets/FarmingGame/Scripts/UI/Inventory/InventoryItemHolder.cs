@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class InventoryItemHolder : MonoBehaviour
@@ -8,7 +9,11 @@ public class InventoryItemHolder : MonoBehaviour
     [SerializeField] private Image imgItem;
     [SerializeField] private Toggle tgItem;
     [SerializeField] private TextMeshProUGUI txtStack;
-    public int itemPos;
+
+    public void InitToggleEvent(UnityAction<bool> tgEvent)
+    {
+        tgItem.onValueChanged.AddListener(isOn => { tgEvent?.Invoke(isOn); });
+    }
 
     public void UpdateItem(InventoryItem item)
     {

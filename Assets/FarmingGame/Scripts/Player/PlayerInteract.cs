@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using GgAccelSDK.Script;
 using UnityEngine;
 
 public class PlayerInteract : MonoBehaviour

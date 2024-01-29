@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
-using GgAccel;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class InventoryController : MonoBehaviour
 {
     private InputMaster.PlayerActions PlayerActions => InputHelper.Input.Player;
-    [SerializeField] private AudioClip clickButtonSfx;
 
     private void Awake()
     {
@@ -37,11 +33,6 @@ public class InventoryController : MonoBehaviour
     private void OnChangeItemHold(int itemPos)
     {
         if (!isActiveAndEnabled) return;
-        if (itemPos != InventoryData.Instance.CurrentHoldItemPos)
-        {
-            AudioManager.PlaySound(clickButtonSfx);
-        }
-
-        InventoryData.ChangeHoldItem(itemPos);
+        InputSignals.OnQuickAccessInventoryClick.Dispatch(itemPos);
     }
 }
