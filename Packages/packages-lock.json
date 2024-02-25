@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.ggaccel.sdk": {
+      "version": "https://github.com/Light31313/GgAccelSDK.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "623d80dc3d59fb7c31fd577c5a39edaa4cc504de"
+    },
     "com.unity.2d.animation": {
       "version": "7.0.9",
       "depth": 1,

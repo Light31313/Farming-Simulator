@@ -102,6 +102,7 @@ MonoBehaviour:
   srItem: {fileID: 2547735879630801014}
   followSpeed: 8
   rb: {fileID: 8900171487189558110}
+  viewModel: {fileID: 11400000, guid: c7f01641b6f75a743a644fc4654bd988, type: 2}
 --- !u!58 &6445352113450415953
 CircleCollider2D:
   m_ObjectHideFlags: 0

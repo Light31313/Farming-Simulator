@@ -123,6 +123,7 @@ MonoBehaviour:
   animator: {fileID: 2257367402444698527}
   choppedSfx: {fileID: 8300000, guid: e5fcede98e9d2de44b54e8abba2ae9b6, type: 3}
   dropItemPrefab: {fileID: 6141225716888797938, guid: 5b18e416eb90d6444bb1640fd0ac1d00, type: 3}
+  viewModel: {fileID: 11400000, guid: c7f01641b6f75a743a644fc4654bd988, type: 2}
 --- !u!70 &2257367402444698530
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
