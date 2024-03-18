@@ -1,22 +1,19 @@
 using System;
 using System.Collections.Generic;
-using GgAccel;
-using GgAccel.Observable;
 using strange.extensions.signal.impl;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "TileViewModel", menuName = "ViewModel/TileViewModel")]
-public class TileViewModel : ScriptableObject
+public class TileViewModel : ScriptableSingleton<TileViewModel>
 {
     public static readonly Signal<Vector3Int, bool> OnWateringTile = new();
     public static readonly Signal<Vector3Int> OnUpdateIndicator = new();
     public static readonly Signal<FarmingTileInfo, Vector3Int> OnSowSeedSuccess = new();
     public static readonly Signal<Vector3Int> OnHoeTileSuccess = new();
-
     private readonly Dictionary<Vector3Int, FarmingTileInfo> _farmingTileDic = new();
     private readonly Dictionary<Vector3Int, bool> _interactableTiles = new();
-
     public Vector3Int CurrentIndicatorPos { get; private set; }
 
     public bool IsExistFarmingTileInPos(Vector3Int pos)
@@ -24,27 +21,27 @@ public class TileViewModel : ScriptableObject
         return _farmingTileDic.ContainsKey(pos);
     }
 
-    public bool IsExistFarmingTileInCurrentPos()
+    private bool IsExistFarmingTileInCurrentPos()
     {
         return _farmingTileDic.ContainsKey(CurrentIndicatorPos);
     }
 
-    public bool IsExistPlantInCurrentTile()
+    private bool IsExistPlantInCurrentTile()
     {
         return _farmingTileDic[CurrentIndicatorPos].Config;
     }
 
-    public bool IsCurrentTileInteractable()
+    private bool IsCurrentTileInteractable()
     {
         return _interactableTiles.ContainsKey(CurrentIndicatorPos);
     }
 
-    public void SowSeed(ItemConfig config, Action onSowSuccess)
+    public void SowSeed(ItemConfig config, Action onSowSuccess = null)
     {
         if (!IsExistFarmingTileInCurrentPos() || IsExistPlantInCurrentTile()) return;
         _farmingTileDic[CurrentIndicatorPos].InitPlant(config);
         OnSowSeedSuccess.Dispatch(_farmingTileDic[CurrentIndicatorPos], CurrentIndicatorPos);
-        onSowSuccess.Invoke();
+        onSowSuccess?.Invoke();
     }
 
     public void UpdateIndicatorPos(Vector3Int newPos)
@@ -76,6 +73,14 @@ public class TileViewModel : ScriptableObject
         }
     }
 
+    public void GrowAllPlantsImmediately()
+    {
+        foreach (var item in _farmingTileDic)
+        {
+            item.Value.GrowPlantImmediately();
+        }
+    }
+
     public void ClearIndicator()
     {
         if (CurrentIndicatorPos == -Vector3Int.one) return;
@@ -95,39 +100,11 @@ public class TileViewModel : ScriptableObject
         _interactableTiles.Clear();
         _interactableTiles.AddRange(interactableTiles);
     }
-}
 
-public class FarmingTileInfo
-{
-    private bool _isWatered;
-    public ItemConfig Config { get; private set; }
-    public readonly Observable<int> CurrentStage = new();
-    private int _currentGrowDay;
-
-    public void GrowPlant()
+    public void Harvest(Vector3Int pos)
     {
-        if (_isWatered && Config)
-        {
-            _currentGrowDay++;
-            if (CurrentStage.Value >= Config.SpritePlantGrows.Length - 1) return;
-            if (CurrentStage.Value < Config.DayToGrowEachState.Length &&
-                _currentGrowDay < Config.DayToGrowEachState[CurrentStage.Value]) return;
-            CurrentStage.SetValue(CurrentStage.Value + 1);
-            _currentGrowDay = 0;
-        }
-
-        _isWatered = false;
-    }
-
-    public void InitPlant(ItemConfig config)
-    {
-        CurrentStage.SetValue(0);
-        _currentGrowDay = 0;
-        Config = config;
-    }
-
-    public void Water(bool isWater)
-    {
-        _isWatered = isWater;
+        if (!IsExistFarmingTileInPos(pos)) return;
+        _farmingTileDic[pos].Harvest();
+        _farmingTileDic.Remove(pos);
     }
 }

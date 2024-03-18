@@ -1,4 +1,5 @@
 using System;
+using Cinemachine.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -15,12 +16,15 @@ public class ItemEditor : Editor
         typeProp,
         needIndicatorProp,
         spritePlantGrowsProp,
+        harvestedPlantProp,
         harvestPriceProp,
         attackDamageProp,
         canHarvestMultipleTimesProp,
         spriteHarvestMultipleTimesProp,
         dayToGrowEachStateProp,
-        dayToRegrowProp;
+        dayToRegrowProp,
+        minHarvestQuantityProp,
+        maxHarvestQuantityProp;
 
     void OnEnable()
     {
@@ -33,12 +37,15 @@ public class ItemEditor : Editor
         typeProp = serializedObject.FindProperty("type");
         needIndicatorProp = serializedObject.FindProperty("needIndicator");
         spritePlantGrowsProp = serializedObject.FindProperty("spritePlantGrows");
+        harvestedPlantProp = serializedObject.FindProperty("harvestedPlant");
         harvestPriceProp = serializedObject.FindProperty("harvestPrice");
         attackDamageProp = serializedObject.FindProperty("attackDamage");
         canHarvestMultipleTimesProp = serializedObject.FindProperty("canHarvestMultipleTimes");
         spriteHarvestMultipleTimesProp = serializedObject.FindProperty("spriteHarvestMultipleTimes");
         dayToGrowEachStateProp = serializedObject.FindProperty("dayToGrowEachState");
         dayToRegrowProp = serializedObject.FindProperty("dayToRegrow");
+        minHarvestQuantityProp = serializedObject.FindProperty("minHarvestQuantity");
+        maxHarvestQuantityProp = serializedObject.FindProperty("maxHarvestQuantity");
     }
 
     public override void OnInspectorGUI()
@@ -52,16 +59,23 @@ public class ItemEditor : Editor
                 case ItemTag.Plant:
                     break;
                 case ItemTag.Weapon:
+                    EditorGUILayout.PropertyField(needIndicatorProp);
                     EditorGUILayout.PropertyField(attackDamageProp);
                     break;
                 case ItemTag.Tool:
+                    EditorGUILayout.PropertyField(needIndicatorProp);
                     break;
                 case ItemTag.Material:
                     break;
                 case ItemTag.Seed:
                     EditorGUILayout.PropertyField(spritePlantGrowsProp);
+                    EditorGUILayout.PropertyField(harvestedPlantProp);
                     EditorGUILayout.PropertyField(dayToGrowEachStateProp);
+                    EditorGUILayout.PropertyField(minHarvestQuantityProp);
+                    EditorGUILayout.PropertyField(maxHarvestQuantityProp);
+                    EditorGUILayout.Space(10);
                     EditorGUILayout.PropertyField(canHarvestMultipleTimesProp);
+
                     if (canHarvestMultipleTimesProp.boolValue)
                     {
                         EditorGUILayout.PropertyField(spriteHarvestMultipleTimesProp);
@@ -85,6 +99,5 @@ public class ItemEditor : Editor
         EditorGUILayout.PropertyField(spriteItemProp);
         EditorGUILayout.PropertyField(maxStackProp);
         EditorGUILayout.PropertyField(typeProp);
-        EditorGUILayout.PropertyField(needIndicatorProp);
     }
 }

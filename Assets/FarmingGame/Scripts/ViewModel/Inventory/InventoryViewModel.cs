@@ -1,16 +1,23 @@
 using System;
 using System.Collections.Generic;
 using strange.extensions.signal.impl;
+using UnityEditor;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "InventoryViewModel", menuName = "ViewModel/InventoryViewModel")]
-public class InventoryViewModel : ScriptableObject
+public class InventoryViewModel : ScriptableSingleton<InventoryViewModel>
 {
     public static readonly Signal<int> OnChangeItemHold = new();
     public static readonly Signal<int> OnUpdateItem = new();
 
     [SerializeField] private ItemData itemData;
 
+    public readonly Dictionary<int, InventoryItemData> ItemsDictionary = new();
+    private const int NUMBER_OF_SLOT = 54;
+
+    public int CurrentHoldItemPos { get; private set; }
+    public InventoryItemData GetCurrentHoldItem => ItemsDictionary[CurrentHoldItemPos];
+    
     public ItemConfig GetItemConfig(ItemType type)
     {
         return itemData.ItemDictionary[type];
@@ -27,12 +34,6 @@ public class InventoryViewModel : ScriptableObject
             new(itemData.ItemDictionary[ItemType.CarrotSeed], 4, 10),
         });
     }
-
-    public readonly Dictionary<int, InventoryItemData> ItemsDictionary = new();
-    private const int NUMBER_OF_SLOT = 54;
-
-    public int CurrentHoldItemPos { get; private set; }
-    public InventoryItemData GetCurrentHoldItem => ItemsDictionary[CurrentHoldItemPos];
 
     public void InitInventory(List<InventoryItemData> items)
     {
@@ -88,3 +89,4 @@ public class InventoryViewModel : ScriptableObject
         OnChangeItemHold.Dispatch(itemPos);
     }
 }
+

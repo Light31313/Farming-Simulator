@@ -25,6 +25,8 @@ public class ItemConfig : ScriptableObject
 
     [Header("For Plant")] [SerializeField] private Sprite[] spritePlantGrows;
     public Sprite[] SpritePlantGrows => spritePlantGrows;
+    [SerializeField] private ItemType harvestedPlant;
+    public ItemType HarvestedPlant => harvestedPlant;
     [SerializeField] private int[] dayToGrowEachState;
     public int[] DayToGrowEachState => dayToGrowEachState;
     [SerializeField] private long harvestPrice;
@@ -35,7 +37,12 @@ public class ItemConfig : ScriptableObject
     public Sprite SpriteHarvestMultipleTimes => spriteHarvestMultipleTimes;
     [SerializeField] private int dayToRegrow;
     public int DayToRegrow => dayToRegrow;
-    
+
+    [SerializeField] private int minHarvestQuantity = 2;
+    public int MinHarvestQuantity => minHarvestQuantity;
+    [SerializeField] private int maxHarvestQuantity = 3;
+    public int MaxHarvestQuantity => maxHarvestQuantity;
+
     [Header("For Weapon")] [SerializeField]
     private float attackDamage;
 
@@ -51,6 +58,8 @@ public enum ItemType
     Hoe,
     Axe,
     WateringPot,
+
+    // Seed
     CornSeed,
     BeetSeed,
     CabbageSeed,
@@ -64,7 +73,23 @@ public enum ItemType
     StarFruitSeed,
     TomatoSeed,
     TulipSeed,
-    WheatSeed
+    WheatSeed,
+
+    // Harvested Plant
+    Corn,
+    Beet,
+    Cabbage,
+    Carrot,
+    Cauliflower,
+    Cucumber,
+    Eggplant,
+    Pumpkin,
+    Radish,
+    RedCabbage,
+    StarFruit,
+    Tomato,
+    Tulip,
+    Wheat
 }
 
 public enum ItemTag

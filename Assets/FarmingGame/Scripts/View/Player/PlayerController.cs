@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerController : BaseAnimationMonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float harvestRadius = 1f;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private PlayerInteract interact;
     [SerializeField] private InventoryViewModel inventoryViewModel;
@@ -18,12 +19,15 @@ public class PlayerController : BaseAnimationMonoBehaviour
     private Coroutine _waitDoneAttackingCoroutine;
     private InputMaster.PlayerActions PlayerActions => InputHelper.Input.Player;
     private Vector2Int _currentFacingDirection = Vector2Int.down;
+    private Transform _cacheTransform;
+
 
     private void Awake()
     {
-        playerViewModel.UpdateTransform(transform);
+        _cacheTransform = transform;
+        playerViewModel.UpdateTransform(_cacheTransform);
     }
-    
+
     private void Update()
     {
         if (inventoryViewModel.GetCurrentHoldItem != null && inventoryViewModel.GetCurrentHoldItem.Config.NeedIndicator)
@@ -93,21 +97,43 @@ public class PlayerController : BaseAnimationMonoBehaviour
     private void OnClickInteract(InputAction.CallbackContext context)
     {
         if (EventSystem.current.IsPointerOverGameObject()) return;
-        if (inventoryViewModel.GetCurrentHoldItem == null) return;
-        switch (inventoryViewModel.GetCurrentHoldItem.Config.Type)
+        if (GameObjectInteract()) return;
+        InventoryInteract();
+
+        void InventoryInteract()
         {
-            case ItemType.Axe:
-                SetInteractingAnimation(PlayerState.Chop);
-                break;
-            case ItemType.Hoe:
-                SetInteractingAnimation(PlayerState.Hoe);
-                break;
-            case ItemType.WateringPot:
-                SetInteractingAnimation(PlayerState.Watering);
-                break;
-            default:
-                Interact();
-                break;
+            if (inventoryViewModel.GetCurrentHoldItem == null) return;
+            switch (inventoryViewModel.GetCurrentHoldItem.Config.Type)
+            {
+                case ItemType.Axe:
+                    SetInteractingAnimation(PlayerState.Chop);
+                    break;
+                case ItemType.Hoe:
+                    SetInteractingAnimation(PlayerState.Hoe);
+                    break;
+                case ItemType.WateringPot:
+                    SetInteractingAnimation(PlayerState.Watering);
+                    break;
+                default:
+                    Interact();
+                    break;
+            }
+        }
+
+        bool GameObjectInteract()
+        {
+            var go = MouseController.Instance.InteractableGameObject;
+            if (!go) return false;
+            if (go.CompareTag("Plant") &&
+                (go.transform.position - _cacheTransform.position).sqrMagnitude <= harvestRadius)
+            {
+                MouseController.Instance.ShowDefaultCursor();
+                var plant = go.GetComponent<Plant>();
+                plant.Harvest();
+                return true;
+            }
+
+            return false;
         }
     }
 

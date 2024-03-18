@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 3398386231415140045}
   - component: {fileID: 194795141957867254}
   - component: {fileID: 3197928395086144553}
+  - component: {fileID: 3342238155402912022}
   m_Layer: 0
   m_Name: Plant
-  m_TagString: Untagged
+  m_TagString: Plant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -2071830834, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  m_Sprite: {fileID: -1650944946, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -98,3 +99,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   srPlant: {fileID: 194795141957867254}
+  tileViewModel: {fileID: 11400000, guid: bf6cec8e074a083448ef65c70c4bd54a, type: 2}
+--- !u!58 &3342238155402912022
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5709728418258457597}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.39999962}
+  serializedVersion: 2
+  m_Radius: 0.5

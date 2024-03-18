@@ -7,6 +7,7 @@ TagManager:
   - PlayerHit
   - PlayerCollect
   - PlayerCollide
+  - Plant
   layers:
   - Default
   - TransparentFX

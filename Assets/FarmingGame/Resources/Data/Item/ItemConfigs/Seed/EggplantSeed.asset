@@ -24,9 +24,12 @@ MonoBehaviour:
   - {fileID: -2038959207, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
   - {fileID: -504641743, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
   - {fileID: -1850204904, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  harvestedPlant: 27
   dayToGrowEachState: 010000000100000001000000
   harvestPrice: 0
   canHarvestMultipleTimes: 0
   spriteHarvestMultipleTimes: {fileID: -2147439392, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
   dayToRegrow: 0
+  minHarvestQuantity: 2
+  maxHarvestQuantity: 3
   attackDamage: 0

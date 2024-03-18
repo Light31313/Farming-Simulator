@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a37530a5f4f52a4489915bcab91ff1a1, type: 3}
+  m_Name: Corn
+  m_EditorClassIdentifier: Assembly-CSharp::ItemConfig
+  tags: 01000000
+  itemName: Corn
+  itemDescription: Corn
+  spriteItem: {fileID: 2116542668, guid: 4189d8129abc8eb459979d095c47a6ce, type: 3}
+  maxStack: 99
+  type: 21
+  needIndicator: 1
+  spritePlantGrows:
+  - {fileID: -2071830834, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: 96480652, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: 319432900, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  - {fileID: -1694014965, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  harvestedPlant: 21
+  dayToGrowEachState: 030000000300000003000000
+  harvestPrice: 0
+  canHarvestMultipleTimes: 1
+  spriteHarvestMultipleTimes: {fileID: -2147439392, guid: 8df343cf7de74ad48a9203102df24170, type: 3}
+  dayToRegrow: 3
+  minHarvestQuantity: 2
+  maxHarvestQuantity: 3
+  attackDamage: 0
