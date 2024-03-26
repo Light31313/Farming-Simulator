@@ -16,7 +16,7 @@ public class Plant : MonoBehaviour
     public void InitPlant(FarmingTileInfo seed)
     {
         _seed = seed;
-        srPlant.sprite = seed.Config.SpritePlantGrows[0];
+        srPlant.sprite = seed.config.SpritePlantGrows[seed.CurrentStage.Value];
         _seed.CurrentStage.OnChangedValues += OnPlantStageChange;
         _seed.IsHarvested.OnChangedValues += OnHarvested;
     }
@@ -25,14 +25,12 @@ public class Plant : MonoBehaviour
     {
         if (_seed != null && _seed.IsHarvestable())
         {
-            Debug.Log("OnMouseEnter");
-            MouseController.Instance.ShowInteractableCursor(gameObject);
+            MouseController.Instance.ShowInteractableCursor();
         }
     }
 
     private void OnMouseExit()
     {
-        Debug.Log("OnMouseExit");
         MouseController.Instance.ShowDefaultCursor();
     }
 
@@ -40,7 +38,7 @@ public class Plant : MonoBehaviour
     {
         if (isHarvested)
         {
-            GameUtils.Instance.DropItem(_cacheTransform.position, _seed.Config.HarvestedPlant, _seed.HarvestQuantity);
+            GameUtils.Instance.DropItem(_cacheTransform.position, _seed.config.HarvestedPlant, _seed.HarvestQuantity);
             _seed = null;
             Pool.Release(this);
         }
@@ -48,7 +46,7 @@ public class Plant : MonoBehaviour
 
     private void OnPlantStageChange(int oldValue, int newValue)
     {
-        srPlant.sprite = _seed.Config.SpritePlantGrows[newValue];
+        srPlant.sprite = _seed.config.SpritePlantGrows[newValue];
     }
 
     public void Harvest()

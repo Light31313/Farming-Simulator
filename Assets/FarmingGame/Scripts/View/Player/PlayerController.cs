@@ -1,4 +1,6 @@
 using System.Collections;
+using Bayat.SaveSystem;
+using GgAccel;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -20,7 +22,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
     private InputMaster.PlayerActions PlayerActions => InputHelper.Input.Player;
     private Vector2Int _currentFacingDirection = Vector2Int.down;
     private Transform _cacheTransform;
-
+    
 
     private void Awake()
     {
@@ -96,7 +98,7 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
     private void OnClickInteract(InputAction.CallbackContext context)
     {
-        if (EventSystem.current.IsPointerOverGameObject()) return;
+        if (MouseController.Instance.IsMouseOverUI) return;
         if (GameObjectInteract()) return;
         InventoryInteract();
 
@@ -122,13 +124,16 @@ public class PlayerController : BaseAnimationMonoBehaviour
 
         bool GameObjectInteract()
         {
-            var go = MouseController.Instance.InteractableGameObject;
-            if (!go) return false;
-            if (go.CompareTag("Plant") &&
-                (go.transform.position - _cacheTransform.position).sqrMagnitude <= harvestRadius)
+            var rayHit =
+                Physics2D.GetRayIntersection(CameraHelper.ScreenPointToRay(Mouse.current.position.ReadValue()));
+            if (!rayHit.collider) return false;
+            var rayHitTransform = rayHit.transform;
+
+            if (rayHitTransform.CompareTag("Plant") &&
+                (rayHitTransform.position - _cacheTransform.position).sqrMagnitude <= harvestRadius)
             {
                 MouseController.Instance.ShowDefaultCursor();
-                var plant = go.GetComponent<Plant>();
+                var plant = rayHitTransform.GetComponent<Plant>();
                 plant.Harvest();
                 return true;
             }

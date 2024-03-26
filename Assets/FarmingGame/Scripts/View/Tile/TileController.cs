@@ -17,7 +17,7 @@ public class TileController : MonoBehaviour
 
     public Color WateredTileColor => new(0.8f, 0.8f, 0.8f, 1f);
 
-    private void Start()
+    private async void Start()
     {
         var interactableTiles = new Dictionary<Vector3Int, bool>();
 
@@ -32,6 +32,21 @@ public class TileController : MonoBehaviour
         }
 
         viewModel.UpdateInteractableTiles(interactableTiles);
+        UpdateDataToView(await viewModel.Load());
+    }
+
+    private void UpdateDataToView(Dictionary<Vector3Int, FarmingTileInfo> farmingTileInfos)
+    {
+        foreach (var item in farmingTileInfos)
+        {
+            OnHoeTileSuccess(item.Key);
+            if (item.Value.config)
+            {
+                OnSowSeedSuccess(item.Value, item.Key);
+            }
+
+            OnWateringTile(item.Key, item.Value.isWatered);
+        }
     }
 
     private void OnEnable()
@@ -65,6 +80,12 @@ public class TileController : MonoBehaviour
         TileViewModel.OnUpdateIndicator.RemoveListener(OnUpdateIndicator);
         TileViewModel.OnSowSeedSuccess.RemoveListener(OnSowSeedSuccess);
         TileViewModel.OnHoeTileSuccess.RemoveListener(OnHoeTileSuccess);
+    }
+
+
+    private void OnApplicationQuit()
+    {
+        viewModel.Save();
     }
 
     private void OnWateringTile(Vector3Int waterPos, bool isWatering)

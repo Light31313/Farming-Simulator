@@ -18,6 +18,7 @@ public class QuickAccessInventory : MonoBehaviour
         IEnumerator WaitInitDataDone()
         {
             yield return new WaitUntil(() => GameManager.Instance.isInitDataDone);
+            OnQuickAccessInventoryClick(0); // Hold the first item
             for (var i = 0; i < inventoryItemHolders.Length; i++)
             {
                 var itemView = inventoryItemHolders[i];

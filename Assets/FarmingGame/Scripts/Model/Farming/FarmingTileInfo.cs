@@ -1,51 +1,54 @@
+using System;
 using GgAccel.Observable;
+using UnityEngine;
 using Random = UnityEngine.Random;
 
+[Serializable]
 public class FarmingTileInfo
 {
-    private bool _isWatered;
-    public ItemConfig Config { get; private set; }
+    public bool isWatered;
+    public ItemConfig config;
     public readonly Observable<int> CurrentStage = new();
     public readonly Observable<bool> IsHarvested = new();
-    private int _currentGrowDay;
+    [SerializeField] private int _currentGrowDay;
     public int HarvestQuantity { get; private set; }
 
     public void GrowPlant()
     {
-        if (_isWatered && Config)
+        if (isWatered && config)
         {
             _currentGrowDay++;
             if (IsHarvestable()) return;
-            if (CurrentStage.Value < Config.DayToGrowEachState.Length &&
-                _currentGrowDay < Config.DayToGrowEachState[CurrentStage.Value]) return;
+            if (CurrentStage.Value < config.DayToGrowEachState.Length &&
+                _currentGrowDay < config.DayToGrowEachState[CurrentStage.Value]) return;
             CurrentStage.SetValue(CurrentStage.Value + 1);
             _currentGrowDay = 0;
         }
 
-        _isWatered = false;
+        isWatered = false;
     }
 
     public void GrowPlantImmediately()
     {
-        CurrentStage.Value = Config.SpritePlantGrows.Length - 1;
+        CurrentStage.Value = config.SpritePlantGrows.Length - 1;
     }
 
-    public void InitPlant(ItemConfig config)
+    public void InitPlant(ItemConfig conf)
     {
         CurrentStage.SetValue(0);
         _currentGrowDay = 0;
-        Config = config;
-        HarvestQuantity = Random.Range(config.MinHarvestQuantity, config.MaxHarvestQuantity + 1);
+        config = conf;
+        HarvestQuantity = Random.Range(conf.MinHarvestQuantity, conf.MaxHarvestQuantity + 1);
     }
 
     public bool IsHarvestable()
     {
-        return CurrentStage.Value >= Config.SpritePlantGrows.Length - 1;
+        return config && CurrentStage.Value >= config.SpritePlantGrows.Length - 1;
     }
 
     public void Water(bool isWater)
     {
-        _isWatered = isWater;
+        isWatered = isWater;
     }
 
     public void Harvest()

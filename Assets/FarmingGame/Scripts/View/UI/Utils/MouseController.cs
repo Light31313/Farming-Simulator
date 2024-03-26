@@ -1,19 +1,26 @@
+using System;
 using System.Collections;
 using GgAccel;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseController : MonoSingleton<MouseController>
 {
     [SerializeField] private Texture2D textureOpenHandCursor, textureCloseHandCursor;
     [SerializeField] private Texture2D textureDefaultCursor;
     private Coroutine _showInteractableCursorCoroutine;
-    private bool IsShowingInteractableCursor => InteractableGameObject;
-    public GameObject InteractableGameObject { get; private set; }
+    private bool _isShowingInteractableCursor;
+    public bool IsMouseOverUI { get; private set; }
 
-    public void ShowInteractableCursor(GameObject go)
+    private void Update()
     {
-        if (InteractableGameObject) return;
-        InteractableGameObject = go;
+        IsMouseOverUI = EventSystem.current.IsPointerOverGameObject();
+    }
+
+    public void ShowInteractableCursor()
+    {
+        if (_isShowingInteractableCursor) return;
+        _isShowingInteractableCursor = true;
         _showInteractableCursorCoroutine = StartCoroutine(IEShowInteractableCursor());
 
         IEnumerator IEShowInteractableCursor()
@@ -30,8 +37,8 @@ public class MouseController : MonoSingleton<MouseController>
 
     public void ShowDefaultCursor()
     {
-        if (!IsShowingInteractableCursor) return;
-        InteractableGameObject = null;
+        if (!_isShowingInteractableCursor) return;
+        _isShowingInteractableCursor = false;
         if (_showInteractableCursorCoroutine != null) StopCoroutine(_showInteractableCursorCoroutine);
         Cursor.SetCursor(Instance.textureDefaultCursor, Vector2.zero, CursorMode.Auto);
     }

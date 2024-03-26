@@ -22,7 +22,7 @@ public class InventoryViewModel : ScriptableSingleton<InventoryViewModel>
     {
         return itemData.ItemDictionary[type];
     }
-
+    
     public void InitInventoryData()
     {
         InitInventory(new List<InventoryItemData>
